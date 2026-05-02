@@ -4,7 +4,7 @@ This folder contains the backend foundation for the Big Data Pipeline Monitor sc
 
 The backend is a simple Node.js and Express API. It will later contain the business logic for datasets, pipelines, simulated job runs, alert rules, and alert events.
 
-This step prepares the backend structure and the first Prisma domain model. It does not implement the main business endpoints yet.
+This step includes the backend structure, Prisma domain model, and the first dataset and pipeline API endpoints.
 
 ## Install Dependencies
 
@@ -141,6 +141,52 @@ Get a dataset by its ID.
 **Curl example:**
 ```bash
 curl http://localhost:3000/api/datasets/<DATASET_ID>
+```
+
+
+## Pipeline Endpoints
+
+### `POST /api/pipelines`
+Create a new pipeline for an existing dataset.
+
+**Request body example:**
+```json
+{
+  "datasetId": "existing-dataset-id",
+  "name": "daily-aggregation",
+  "description": "Daily revenue aggregation",
+  "schedule": "0 2 * * *",
+  "active": true
+}
+```
+
+**Curl example:**
+```bash
+curl -X POST http://localhost:3000/api/pipelines \
+  -H "Content-Type: application/json" \
+  -d '{
+    "datasetId": "existing-dataset-id",
+    "name": "daily-aggregation",
+    "description": "Daily revenue aggregation",
+    "schedule": "0 2 * * *",
+    "active": true
+  }'
+```
+
+### `GET /api/pipelines`
+List all pipelines (ordered by createdAt descending).
+
+**Curl example:**
+```bash
+curl http://localhost:3000/api/pipelines
+```
+
+### `GET /api/pipelines/:id`
+Get a pipeline by its ID.
+
+**Curl example:**
+```bash
+curl http://localhost:3000/api/pipelines/<PIPELINE_ID>
 ```
 
 ---

@@ -14,21 +14,19 @@ Returns a list of datasets.
 ### `GET /api/datasets/:id` (implemented)
 Returns one dataset by its ID.
 
-## Pipelines
 
-### `POST /pipelines`
+## Pipelines (implemented)
 
+### `POST /api/pipelines` (implemented)
 Creates a new pipeline for an existing dataset.
 
-### `GET /pipelines`
-
+### `GET /api/pipelines` (implemented)
 Returns a list of pipelines.
 
-### `GET /pipelines/:id`
-
+### `GET /api/pipelines/:id` (implemented)
 Returns one pipeline by its ID.
 
-### `POST /pipelines/:id/run`
+### `POST /api/pipelines/:id/run`
 
 Starts a simulated run for an active pipeline. Creates a new `JobRun` with status `running`.
 

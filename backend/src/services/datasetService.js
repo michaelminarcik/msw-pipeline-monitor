@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../db/prisma');
 
 async function createDataset(data) {
   // Check for duplicate name
@@ -18,7 +17,7 @@ async function getAllDatasets() {
 
 async function getDatasetById(id) {
   // Optionally, include pipelines count if relation exists
-  return await prisma.dataset.findUnique({ where: { id: Number(id) } });
+  return await prisma.dataset.findUnique({ where: { id } });
 }
 
 module.exports = {
