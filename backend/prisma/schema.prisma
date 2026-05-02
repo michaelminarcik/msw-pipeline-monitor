@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Dataset {
+  id            String     @id @default(uuid())
+  name          String     @unique
+  description   String?
+  owner         String
+  schemaVersion Int        @default(1)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  pipelines     Pipeline[]
+}
+
+model Pipeline {
+  id          String      @id @default(uuid())
+  datasetId   String
+  name        String
+  description String?
+  schedule    String?
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  dataset     Dataset     @relation(fields: [datasetId], references: [id])
+  runs        JobRun[]
+  alertRules  AlertRule[]
+
+  @@unique([datasetId, name])
+}
+
+model JobRun {
+  id               String        @id @default(uuid())
+  pipelineId       String
+  status           JobRunStatus
+  startedAt        DateTime      @default(now())
+  finishedAt       DateTime?
+  recordsProcessed Int           @default(0)
+  errorMessage     String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  pipeline         Pipeline      @relation(fields: [pipelineId], references: [id])
+  alertEvents      AlertEvent[]
+}
+
+model AlertRule {
+  id          String       @id @default(uuid())
+  pipelineId  String
+  name        String
+  condition   String
+  enabled     Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  pipeline    Pipeline     @relation(fields: [pipelineId], references: [id])
+  alertEvents AlertEvent[]
+}
+
+model AlertEvent {
+  id        String        @id @default(uuid())
+  ruleId    String?
+  runId     String
+  message   String
+  severity  AlertSeverity
+  status    AlertStatus
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  rule      AlertRule?    @relation(fields: [ruleId], references: [id])
+  run       JobRun        @relation(fields: [runId], references: [id])
+}
+
+enum JobRunStatus {
+  pending
+  running
+  success
+  failed
+}
+
+enum AlertSeverity {
+  info
+  warning
+  critical
+}
+
+enum AlertStatus {
+  open
+  resolved
+}

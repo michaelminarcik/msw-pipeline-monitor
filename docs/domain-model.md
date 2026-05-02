@@ -1,18 +1,22 @@
 # Domain Model
 
+The domain model describes the main concepts in the simulated pipeline monitoring system. The project stores metadata and simulated run results. It does not execute real Spark, Airflow, Databricks, or distributed computing jobs.
+
 ## Dataset
 
 ### Purpose
 
-A `Dataset` represents a data source or data target used by pipelines. It gives context to what a pipeline processes.
+A `Dataset` represents a data source metadata record. It describes data that can be processed by one or more pipelines.
 
 ### Important Fields
 
-- `id`: unique identifier.
-- `name`: dataset name.
+- `id`: UUID primary key.
+- `name`: unique dataset name.
 - `description`: optional explanation of the dataset.
-- `location`: optional simulated storage location.
+- `owner`: person or team responsible for the dataset.
+- `schemaVersion`: version number of the dataset schema, default `1`.
 - `createdAt`: date and time when the dataset was created.
+- `updatedAt`: date and time when the dataset was last updated.
 
 ### Relationships
 
@@ -23,82 +27,92 @@ A `Dataset` represents a data source or data target used by pipelines. It gives 
 
 ### Purpose
 
-A `Pipeline` represents a simulated data processing workflow. It does not run real distributed jobs. It only describes something that can be started and monitored in the application.
+A `Pipeline` represents a configured data processing pipeline. In this project it is only a simulated pipeline definition, not a real orchestration workflow.
 
 ### Important Fields
 
-- `id`: unique identifier.
+- `id`: UUID primary key.
 - `datasetId`: reference to the related dataset.
 - `name`: pipeline name.
 - `description`: optional explanation of the pipeline.
-- `isActive`: tells whether the pipeline can be run.
+- `schedule`: optional text description of when the pipeline should run.
+- `active`: tells whether the pipeline can be run, default `true`.
 - `createdAt`: date and time when the pipeline was created.
+- `updatedAt`: date and time when the pipeline was last updated.
 
 ### Relationships
 
 - One `Pipeline` belongs to one `Dataset`.
 - One `Pipeline` can have many `JobRuns`.
 - One `Pipeline` can have many `AlertRules`.
+- The same dataset cannot have two pipelines with the same name.
 
 ## JobRun
 
 ### Purpose
 
-A `JobRun` represents one simulated execution of a pipeline. It stores the status and timing of the run.
+A `JobRun` represents one simulated execution of a pipeline. It stores the run status, timing, processed record count, and possible error message.
 
 ### Important Fields
 
-- `id`: unique identifier.
+- `id`: UUID primary key.
 - `pipelineId`: reference to the pipeline that was run.
-- `status`: current status, such as `running`, `success`, or `failed`.
+- `status`: current status: `pending`, `running`, `success`, or `failed`.
 - `startedAt`: date and time when the run started.
 - `finishedAt`: optional date and time when the run finished.
-- `message`: optional message with additional information.
+- `recordsProcessed`: number of processed records, default `0`.
+- `errorMessage`: optional error message for failed runs.
+- `createdAt`: date and time when the job run was created.
+- `updatedAt`: date and time when the job run was last updated.
 
 ### Relationships
 
 - One `JobRun` belongs to one `Pipeline`.
-- One failed `JobRun` can create one or more `AlertEvents`.
+- One `JobRun` can have many `AlertEvents`.
 
 ## AlertRule
 
 ### Purpose
 
-An `AlertRule` defines when an alert should be created. In the first version, the most important rule is creating an alert when a job run fails.
+An `AlertRule` represents a rule that can trigger an alert. For example, a rule can describe that a failed run should create an alert.
 
 ### Important Fields
 
-- `id`: unique identifier.
+- `id`: UUID primary key.
 - `pipelineId`: reference to the pipeline.
 - `name`: rule name.
-- `type`: rule type, for example `on_failure`.
-- `isActive`: tells whether the rule is enabled.
+- `condition`: simple text description of the alert condition.
+- `enabled`: tells whether the rule is active, default `true`.
 - `createdAt`: date and time when the rule was created.
+- `updatedAt`: date and time when the rule was last updated.
 
 ### Relationships
 
 - One `AlertRule` belongs to one `Pipeline`.
-- One `AlertRule` can be connected to many `AlertEvents`.
+- One `AlertRule` can have many `AlertEvents`.
 
 ## AlertEvent
 
 ### Purpose
 
-An `AlertEvent` represents an alert that was created because something important happened, such as a failed job run.
+An `AlertEvent` represents an actual alert created when a rule is triggered or when a run fails.
 
 ### Important Fields
 
-- `id`: unique identifier.
-- `alertRuleId`: optional reference to the rule that created the alert.
-- `jobRunId`: reference to the failed job run.
+- `id`: UUID primary key.
+- `ruleId`: optional reference to the alert rule.
+- `runId`: reference to the related job run.
 - `message`: alert message.
-- `createdAt`: date and time when the alert was created.
-- `resolvedAt`: optional date and time when the alert was resolved.
+- `severity`: alert severity: `info`, `warning`, or `critical`.
+- `status`: alert status: `open` or `resolved`.
+- `createdAt`: date and time when the alert event was created.
+- `updatedAt`: date and time when the alert event was last updated.
 
 ### Relationships
 
-- One `AlertEvent` can belong to one `AlertRule`.
 - One `AlertEvent` belongs to one `JobRun`.
+- One `AlertEvent` can optionally belong to one `AlertRule`.
+- `ruleId` is optional so a failed job run can create an alert even if no alert rule exists.
 
 ## Optional Future Entities
 
@@ -115,4 +129,3 @@ These entities are useful ideas for future versions, but they are not part of th
 ### User
 
 `User` could support authentication and ownership of datasets or pipelines. Authentication is not planned for the first implementation because it would add complexity that is not necessary for the main architecture goal.
-
