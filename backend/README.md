@@ -99,7 +99,51 @@ PORT=3000
 
 Do not commit real `.env` files.
 
-## Current Endpoint
+
+## Dataset Endpoints
+
+### `POST /api/datasets`
+Create a new dataset.
+
+**Request body example:**
+```json
+{
+  "name": "customer_transactions",
+  "description": "Raw transaction dataset",
+  "owner": "analytics-team",
+  "schemaVersion": 1
+}
+```
+
+**Curl example:**
+```bash
+curl -X POST http://localhost:3000/api/datasets \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "customer_transactions",
+    "description": "Raw transaction dataset",
+    "owner": "analytics-team",
+    "schemaVersion": 1
+  }'
+```
+
+### `GET /api/datasets`
+List all datasets (ordered by createdAt descending).
+
+**Curl example:**
+```bash
+curl http://localhost:3000/api/datasets
+```
+
+### `GET /api/datasets/:id`
+Get a dataset by its ID.
+
+**Curl example:**
+```bash
+curl http://localhost:3000/api/datasets/<DATASET_ID>
+```
+
+---
 
 ### `GET /health`
 
@@ -111,7 +155,3 @@ Returns a simple health response:
   "service": "Big Data Pipeline Monitor API"
 }
 ```
-
-## Current Status
-
-Backend foundation and database model step only. Dataset, pipeline, run, alert rule, and alert endpoints will be added later.

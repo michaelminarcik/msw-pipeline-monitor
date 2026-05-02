@@ -2,18 +2,16 @@
 
 This document lists the planned REST API endpoints. The exact request and response bodies will be defined during implementation.
 
-## Datasets
 
-### `POST /datasets`
+## Datasets (implemented)
 
+### `POST /api/datasets` (implemented)
 Creates a new dataset.
 
-### `GET /datasets`
-
+### `GET /api/datasets` (implemented)
 Returns a list of datasets.
 
-### `GET /datasets/:id`
-
+### `GET /api/datasets/:id` (implemented)
 Returns one dataset by its ID.
 
 ## Pipelines
