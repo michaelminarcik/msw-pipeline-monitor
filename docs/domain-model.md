@@ -57,7 +57,7 @@ A `JobRun` represents one simulated execution of a pipeline. It stores the run s
 
 - `id`: UUID primary key.
 - `pipelineId`: reference to the pipeline that was run.
-- `status`: current status: `pending`, `running`, `success`, or `failed`.
+- `status`: current status stored as text: `pending`, `running`, `success`, or `failed`.
 - `startedAt`: date and time when the run started.
 - `finishedAt`: optional date and time when the run finished.
 - `recordsProcessed`: number of processed records, default `0`.
@@ -103,8 +103,8 @@ An `AlertEvent` represents an actual alert created when a rule is triggered or w
 - `ruleId`: optional reference to the alert rule.
 - `runId`: reference to the related job run.
 - `message`: alert message.
-- `severity`: alert severity: `info`, `warning`, or `critical`.
-- `status`: alert status: `open` or `resolved`.
+- `severity`: alert severity stored as text: `info`, `warning`, or `critical`.
+- `status`: alert status stored as text: `open` or `resolved`.
 - `createdAt`: date and time when the alert event was created.
 - `updatedAt`: date and time when the alert event was last updated.
 
@@ -113,6 +113,10 @@ An `AlertEvent` represents an actual alert created when a rule is triggered or w
 - One `AlertEvent` belongs to one `JobRun`.
 - One `AlertEvent` can optionally belong to one `AlertRule`.
 - `ruleId` is optional so a failed job run can create an alert even if no alert rule exists.
+
+## Status and Severity Values
+
+The planned status and severity values behave like enums in the application logic, but they are stored as strings in Prisma. This keeps the project compatible with SQLite, which is used to keep the school project simple and easy to run locally.
 
 ## Optional Future Entities
 

@@ -37,7 +37,9 @@ model Pipeline {
 model JobRun {
   id               String        @id @default(uuid())
   pipelineId       String
-  status           JobRunStatus
+  // Allowed values: pending, running, success, failed.
+  // Stored as String because the SQLite connector used by this project does not support Prisma enums.
+  status           String
   startedAt        DateTime      @default(now())
   finishedAt       DateTime?
   recordsProcessed Int           @default(0)
@@ -65,28 +67,14 @@ model AlertEvent {
   ruleId    String?
   runId     String
   message   String
-  severity  AlertSeverity
-  status    AlertStatus
+  // Allowed values: info, warning, critical.
+  // Stored as String because the SQLite connector used by this project does not support Prisma enums.
+  severity  String
+  // Allowed values: open, resolved.
+  // Stored as String because the SQLite connector used by this project does not support Prisma enums.
+  status    String
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   rule      AlertRule?    @relation(fields: [ruleId], references: [id])
   run       JobRun        @relation(fields: [runId], references: [id])
-}
-
-enum JobRunStatus {
-  pending
-  running
-  success
-  failed
-}
-
-enum AlertSeverity {
-  info
-  warning
-  critical
-}
-
-enum AlertStatus {
-  open
-  resolved
 }

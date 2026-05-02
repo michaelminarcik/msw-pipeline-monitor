@@ -63,7 +63,7 @@ npm run prisma:generate
 Create and apply the first migration:
 
 ```bash
-npm run prisma:migrate -- --name init_domain_model
+npm run prisma:migrate
 ```
 
 Currently modeled entities:
@@ -74,11 +74,13 @@ Currently modeled entities:
 - `AlertRule`
 - `AlertEvent`
 
-Currently modeled enums:
+The planned enum-like values are:
 
-- `JobRunStatus`
-- `AlertSeverity`
-- `AlertStatus`
+- `JobRun.status`: `pending`, `running`, `success`, `failed`
+- `AlertEvent.severity`: `info`, `warning`, `critical`
+- `AlertEvent.status`: `open`, `resolved`
+
+These values are stored as strings in Prisma because the SQLite connector used by this project does not support Prisma enum types. The allowed values will be validated in the backend with Zod and business rules.
 
 ## Environment Variables
 
