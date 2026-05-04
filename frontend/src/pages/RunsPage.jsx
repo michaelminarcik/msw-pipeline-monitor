@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import apiClient from '../api/apiClient.js';
 import EmptyState from '../components/EmptyState.jsx';
 import ErrorState from '../components/ErrorState.jsx';
@@ -90,6 +91,7 @@ function RunsPage() {
                 <th>Started</th>
                 <th>Finished</th>
                 <th>Records</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -103,6 +105,11 @@ function RunsPage() {
                   <td>{formatDate(run.startedAt)}</td>
                   <td>{formatDate(run.finishedAt)}</td>
                   <td>{run.recordsProcessed}</td>
+                  <td>
+                    <Link className="text-link" to={`/runs/${run.id}`}>
+                      View detail
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>

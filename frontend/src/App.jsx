@@ -4,6 +4,7 @@ import DashboardPage from './pages/DashboardPage.jsx';
 import DatasetsPage from './pages/DatasetsPage.jsx';
 import PipelineDetailPage from './pages/PipelineDetailPage.jsx';
 import PipelinesPage from './pages/PipelinesPage.jsx';
+import RunDetailPage from './pages/RunDetailPage.jsx';
 import RunsPage from './pages/RunsPage.jsx';
 import AlertsPage from './pages/AlertsPage.jsx';
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="pipelines" element={<PipelinesPage />} />
           <Route path="pipelines/:id" element={<PipelineDetailPage />} />
           <Route path="runs" element={<RunsPage />} />
+          <Route path="runs/:id" element={<RunDetailPage />} />
           <Route path="alerts" element={<AlertsPage />} />
         </Route>
       </Routes>
