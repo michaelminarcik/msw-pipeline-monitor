@@ -2,60 +2,73 @@
 
 ## Overview
 
-Big Data Pipeline Monitor is planned as a simple full-stack web application. It will simulate monitoring of data pipelines for a school project. The system will not run real big data jobs. It will store information about datasets, pipelines, simulated job runs, alert rules, and alert events.
+Big Data Pipeline Monitor is a simple full-stack web application for a school project. It simulates data pipeline monitoring by storing datasets, pipelines, job runs, alert rules, and alert events.
 
-The planned architecture has three main parts:
+It does not execute real Spark, Airflow, Databricks, or distributed computing jobs.
 
-- Frontend: a React web application for the user interface.
-- Backend: a Node.js and Express API for business logic.
-- Database: a SQLite database accessed through Prisma.
+## Layers
 
-## Frontend
+### Frontend Layer
 
-The frontend will be a React application created with Vite. It will show pages for datasets, pipelines, job runs, alert rules, and alert events.
+The frontend is a React application built with Vite. It provides pages for:
 
-The frontend will communicate with the backend by sending HTTP requests. It will not contain important business rules. Its main responsibility is to display data and allow the user to perform actions such as creating a pipeline or starting a simulated run.
+- dashboard
+- datasets
+- pipelines
+- pipeline detail
+- runs
+- run detail
+- alerts
 
-## Backend
+The frontend uses React Router for navigation and Axios for API calls. It does not contain the main business rules. It displays data and sends user actions to the backend.
 
-The backend will be a Node.js application using Express. It will expose REST API endpoints and contain the main business rules.
+### Backend API Layer
 
-The backend will validate incoming requests, check if requested entities exist, control job run state transitions, and create alert events when a simulated job run fails.
+The backend is a Node.js and Express REST API. Routes receive HTTP requests, validate input with Zod, and call service functions.
 
-## Database
+The route files stay thin. They mostly handle request/response wiring and pass errors to centralized error handling.
 
-The database will be SQLite. It is suitable because it is simple, local, and does not require a separate database server.
+### Service and Business Logic Layer
 
-Prisma will be used as the ORM. It will define the data model and provide a clear way to read and write data.
+Service files contain the main database and business logic. Examples:
 
-## Basic Request Flow
+- check that a dataset exists before creating a pipeline
+- check that a pipeline is active before running it
+- check valid job run state transitions
+- create an alert event when a run fails
 
-1. The user performs an action in the React frontend.
-2. The frontend sends an HTTP request to the Express backend.
-3. The backend validates the request.
-4. The backend applies business rules.
-5. The backend reads or writes data using Prisma.
-6. The backend returns a response.
-7. The frontend displays the result to the user.
+### Database Layer
 
-Example: when the user starts a pipeline, the frontend sends a request to `POST /pipelines/:id/run`. The backend checks that the pipeline exists and is active. If the request is valid, the backend creates a new `JobRun` with status `running`.
+SQLite stores the data locally. Prisma is used as the ORM and defines the schema in `backend/prisma/schema.prisma`.
 
-## Suitability for a School Project
+SQLite keeps the project simple to install and demonstrate because no separate database server is required.
 
-This architecture is suitable for a school project because it is easy to understand and explain. Each part has a clear responsibility:
+## Request Flow Example: Run Pipeline
 
-- React handles the user interface.
-- Express handles API requests and business rules.
-- Prisma handles database access.
-- SQLite stores the data locally.
+1. User opens a pipeline detail page in the React frontend.
+2. User clicks `Run pipeline`.
+3. Frontend calls `POST /api/pipelines/:id/run`.
+4. Backend route receives the request.
+5. Backend service loads the pipeline.
+6. Backend checks that the pipeline exists.
+7. Backend checks that `active` is `true`.
+8. Backend creates a `JobRun` with status `running`.
+9. Backend returns the created run.
+10. Frontend refreshes the pipeline detail data.
 
-The project is small enough for one student to implement, but it still demonstrates important software architecture concepts such as separation of concerns, REST API design, validation, persistence, and business rules.
+## Why This Architecture Fits the School Project
 
-## Simulation Scope
+- It separates UI, API, business rules, and persistence.
+- It is easy to explain during oral defense.
+- It demonstrates REST API design, validation, ORM usage, and simple state transitions.
+- It avoids unnecessary infrastructure such as Docker, message queues, or a real scheduler.
+- It can run locally on one computer.
 
-This project is only a simulation of pipeline monitoring. It is not a real orchestration platform.
+## Simplifications Compared to Real Platforms
 
-It will not execute real Spark, Airflow, Databricks, or distributed computing jobs. It will not schedule real workflows across machines. It will only simulate pipeline runs by creating and updating records in the database.
-
-This limitation is intentional. The goal is to demonstrate architecture, domain modeling, API design, and basic monitoring behavior in a way that is simple and defendable during an oral exam.
-
+- No real distributed computation.
+- No real workflow scheduler.
+- No workers or background processing.
+- No authentication or users.
+- No production deployment setup.
+- Pipeline runs are simulated database records, not actual data processing jobs.

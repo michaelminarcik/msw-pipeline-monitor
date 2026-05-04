@@ -1,135 +1,137 @@
 # Domain Model
 
-The domain model describes the main concepts in the simulated pipeline monitoring system. The project stores metadata and simulated run results. It does not execute real Spark, Airflow, Databricks, or distributed computing jobs.
+The domain model describes the entities used by the simulated pipeline monitoring system. The project stores metadata and simulated run results. It does not execute real Spark, Airflow, Databricks, or distributed computing jobs.
 
 ## Dataset
 
-### Purpose
+`Dataset` represents a data source metadata record.
 
-A `Dataset` represents a data source metadata record. It describes data that can be processed by one or more pipelines.
+Important fields:
 
-### Important Fields
+- `id`
+- `name`
+- `description`
+- `owner`
+- `schemaVersion`
+- `createdAt`
+- `updatedAt`
 
-- `id`: UUID primary key.
-- `name`: unique dataset name.
-- `description`: optional explanation of the dataset.
-- `owner`: person or team responsible for the dataset.
-- `schemaVersion`: version number of the dataset schema, default `1`.
-- `createdAt`: date and time when the dataset was created.
-- `updatedAt`: date and time when the dataset was last updated.
+Relationships:
 
-### Relationships
-
-- One `Dataset` can have many `Pipelines`.
-- A `Pipeline` must belong to one existing `Dataset`.
+- One dataset can have many pipelines.
+- A dataset can exist independently.
 
 ## Pipeline
 
-### Purpose
+`Pipeline` represents a configured simulated processing pipeline.
 
-A `Pipeline` represents a configured data processing pipeline. In this project it is only a simulated pipeline definition, not a real orchestration workflow.
+Important fields:
 
-### Important Fields
+- `id`
+- `datasetId`
+- `name`
+- `description`
+- `schedule`
+- `active`
+- `createdAt`
+- `updatedAt`
 
-- `id`: UUID primary key.
-- `datasetId`: reference to the related dataset.
-- `name`: pipeline name.
-- `description`: optional explanation of the pipeline.
-- `schedule`: optional text description of when the pipeline should run.
-- `active`: tells whether the pipeline can be run, default `true`.
-- `createdAt`: date and time when the pipeline was created.
-- `updatedAt`: date and time when the pipeline was last updated.
+Relationships:
 
-### Relationships
-
-- One `Pipeline` belongs to one `Dataset`.
-- One `Pipeline` can have many `JobRuns`.
-- One `Pipeline` can have many `AlertRules`.
-- The same dataset cannot have two pipelines with the same name.
+- One pipeline belongs to one dataset.
+- One pipeline can have many job runs.
+- One pipeline can have many alert rules.
+- The combination of `datasetId` and `name` is unique.
 
 ## JobRun
 
-### Purpose
+`JobRun` represents one simulated execution of a pipeline.
 
-A `JobRun` represents one simulated execution of a pipeline. It stores the run status, timing, processed record count, and possible error message.
+Important fields:
 
-### Important Fields
+- `id`
+- `pipelineId`
+- `status`
+- `startedAt`
+- `finishedAt`
+- `recordsProcessed`
+- `errorMessage`
+- `createdAt`
+- `updatedAt`
 
-- `id`: UUID primary key.
-- `pipelineId`: reference to the pipeline that was run.
-- `status`: current status stored as text: `pending`, `running`, `success`, or `failed`.
-- `startedAt`: date and time when the run started.
-- `finishedAt`: optional date and time when the run finished.
-- `recordsProcessed`: number of processed records, default `0`.
-- `errorMessage`: optional error message for failed runs.
-- `createdAt`: date and time when the job run was created.
-- `updatedAt`: date and time when the job run was last updated.
+Relationships:
 
-### Relationships
+- One job run belongs to one pipeline.
+- One job run can have many alert events.
 
-- One `JobRun` belongs to one `Pipeline`.
-- One `JobRun` can have many `AlertEvents`.
+Allowed status values:
+
+- `pending`
+- `running`
+- `success`
+- `failed`
 
 ## AlertRule
 
-### Purpose
+`AlertRule` represents a condition that can be used to describe when an alert should happen.
 
-An `AlertRule` represents a rule that can trigger an alert. For example, a rule can describe that a failed run should create an alert.
+Important fields:
 
-### Important Fields
+- `id`
+- `pipelineId`
+- `name`
+- `condition`
+- `enabled`
+- `createdAt`
+- `updatedAt`
 
-- `id`: UUID primary key.
-- `pipelineId`: reference to the pipeline.
-- `name`: rule name.
-- `condition`: simple text description of the alert condition.
-- `enabled`: tells whether the rule is active, default `true`.
-- `createdAt`: date and time when the rule was created.
-- `updatedAt`: date and time when the rule was last updated.
+Relationships:
 
-### Relationships
-
-- One `AlertRule` belongs to one `Pipeline`.
-- One `AlertRule` can have many `AlertEvents`.
+- One alert rule belongs to one pipeline.
+- One alert rule can have many alert events.
 
 ## AlertEvent
 
-### Purpose
+`AlertEvent` represents an actual alert that happened.
 
-An `AlertEvent` represents an actual alert created when a rule is triggered or when a run fails.
+Important fields:
 
-### Important Fields
+- `id`
+- `ruleId`
+- `runId`
+- `message`
+- `severity`
+- `status`
+- `createdAt`
+- `updatedAt`
 
-- `id`: UUID primary key.
-- `ruleId`: optional reference to the alert rule.
-- `runId`: reference to the related job run.
-- `message`: alert message.
-- `severity`: alert severity stored as text: `info`, `warning`, or `critical`.
-- `status`: alert status stored as text: `open` or `resolved`.
-- `createdAt`: date and time when the alert event was created.
-- `updatedAt`: date and time when the alert event was last updated.
+Relationships:
 
-### Relationships
+- One alert event belongs to one job run.
+- One alert event can optionally belong to one alert rule.
+- `ruleId` is optional so failed runs can create alerts even if no rule exists.
 
-- One `AlertEvent` belongs to one `JobRun`.
-- One `AlertEvent` can optionally belong to one `AlertRule`.
-- `ruleId` is optional so a failed job run can create an alert even if no alert rule exists.
+Allowed severity values:
 
-## Status and Severity Values
+- `info`
+- `warning`
+- `critical`
 
-The planned status and severity values behave like enums in the application logic, but they are stored as strings in Prisma. This keeps the project compatible with SQLite, which is used to keep the school project simple and easy to run locally.
+Allowed status values:
 
-## Optional Future Entities
+- `open`
+- `resolved`
 
-These entities are useful ideas for future versions, but they are not part of the first implementation.
+## SQLite String Values
 
-### PipelineVersion
+Enum-like values are stored as strings because the project uses SQLite. The backend validates these values with Zod and business rules.
 
-`PipelineVersion` could store different versions of a pipeline definition. This would be useful if the project later needs change history or rollback behavior.
+## Not Implemented
 
-### JobRunStep
+These entities are not implemented in the current project:
 
-`JobRunStep` could represent individual steps inside a job run, such as extract, transform, and load. This would make run monitoring more detailed, but it is not needed for the first version.
+- `User`
+- `JobRunStep`
+- `PipelineVersion`
 
-### User
-
-`User` could support authentication and ownership of datasets or pipelines. Authentication is not planned for the first implementation because it would add complexity that is not necessary for the main architecture goal.
+They can be explained as possible future extensions, but they are not part of the working implementation.

@@ -1,8 +1,6 @@
 # Frontend
 
-This folder contains the React frontend for the Big Data Pipeline Monitor school project.
-
-The current frontend is intentionally simple. It sets up routing, a shared layout, reusable state components, styling, and an Axios API client. The Dashboard and list pages are connected to the backend API, pipelines and runs have detail pages, and basic create forms are available. Navigation links and date/status formatting have been cleaned up for a more consistent demo.
+The frontend is the React user interface for the Big Data Pipeline Monitor school project. It connects to the backend API and allows the user to view monitoring data, create datasets and pipelines, start pipeline runs, and finish running job runs.
 
 ## Technologies
 
@@ -11,35 +9,15 @@ The current frontend is intentionally simple. It sets up routing, a shared layou
 - React Router
 - Axios
 
-## Install Dependencies
+## Environment Variables
 
-From the `frontend` folder, run:
-
-```bash
-npm install
-```
-
-## Run in Development
-
-```bash
-npm run dev
-```
-
-The Vite development server uses port `5173` by default:
-
-```text
-http://localhost:5173
-```
-
-## Backend API URL
-
-The frontend reads the backend API base URL from:
+The frontend reads the API base URL from:
 
 ```text
 VITE_API_BASE_URL
 ```
 
-Create a local `.env` file only when needed. Use `.env.example` as the template:
+The default example is:
 
 ```text
 VITE_API_BASE_URL=/api
@@ -47,16 +25,53 @@ VITE_API_BASE_URL=/api
 
 During development, Vite proxies `/api` requests to `http://localhost:3000`, so the backend should be running there.
 
+Create a local `.env` only if needed:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+## Install and Run
+
+From the `frontend` folder:
+
+```powershell
+npm install
+npm run dev
+```
+
+The frontend runs on:
+
+```text
+http://localhost:5173
+```
+
 ## Available Routes
 
-- `/` - Dashboard with backend summary metrics
-- `/datasets` - Dataset list
-- `/pipelines` - Pipeline list
-- `/pipelines/:id` - Pipeline detail with manual run action
-- `/runs` - Run history list
-- `/runs/:id` - Run detail with finish actions for running runs
-- `/alerts` - Alert event list
+- `/` - dashboard with summary metrics and recent activity
+- `/datasets` - dataset list and create dataset form
+- `/pipelines` - pipeline list and create pipeline form
+- `/pipelines/:id` - pipeline detail with manual run action
+- `/runs` - run history list
+- `/runs/:id` - run detail with finish actions for running runs
+- `/alerts` - alert event list
 
-## Current Status
+## Main UI Pages
 
-Dashboard and list pages are connected to the backend API. Datasets can be created from the frontend, and pipelines can be created by selecting an existing dataset. Pipeline detail can manually start an active pipeline run. Run detail can mark a running run as success or failed; failed runs create alerts through backend business logic. UI cleanup is complete for the current scope, with improved internal links and consistent date/status formatting. Edit forms and other detail pages are planned for later steps.
+- Dashboard shows totals for datasets, pipelines, runs, failed runs, and open alerts.
+- Datasets shows existing datasets and includes a form for creating a dataset.
+- Pipelines shows existing pipelines and includes a form for creating a pipeline by selecting an existing dataset.
+- Pipeline detail shows pipeline metadata, dataset info, recent runs, alert rules, and a `Run pipeline` action for active pipelines.
+- Runs shows job run history.
+- Run detail shows run metadata, pipeline and dataset info, related alert events, and actions to mark a running run as success or failed.
+- Alerts shows alert events created by failed runs.
+
+## Backend Connection
+
+The Axios client is defined in `src/api/apiClient.js`. In local development it calls `/api`, and Vite forwards those requests to:
+
+```text
+http://localhost:3000
+```
+
+This keeps frontend API calls simple and avoids browser CORS issues during local development.
