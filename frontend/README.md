@@ -2,7 +2,7 @@
 
 This folder contains the React frontend for the Big Data Pipeline Monitor school project.
 
-The current frontend is intentionally simple. It sets up routing, a shared layout, reusable state components, styling, and an Axios API client. The Dashboard and list pages are connected to the backend API.
+The current frontend is intentionally simple. It sets up routing, a shared layout, reusable state components, styling, and an Axios API client. The Dashboard and list pages are connected to the backend API, and pipelines have a detail page.
 
 ## Technologies
 
@@ -52,9 +52,10 @@ During development, Vite proxies `/api` requests to `http://localhost:3000`, so 
 - `/` - Dashboard with backend summary metrics
 - `/datasets` - Dataset list
 - `/pipelines` - Pipeline list
+- `/pipelines/:id` - Pipeline detail with manual run action
 - `/runs` - Run history list
 - `/alerts` - Alert event list
 
 ## Current Status
 
-Dashboard and list pages are connected to the backend API. Forms, detail pages, and pipeline actions are planned for later steps.
+Dashboard and list pages are connected to the backend API. Pipeline detail shows metadata, dataset info, recent runs, alert rules, and can manually start an active pipeline run. Forms and other detail pages are planned for later steps.

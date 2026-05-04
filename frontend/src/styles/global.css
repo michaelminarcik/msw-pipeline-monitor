@@ -34,6 +34,13 @@ button:hover {
   border-color: #33658a;
 }
 
+button:disabled {
+  background: #eef2f5;
+  border-color: #cbd5dd;
+  color: #8493a2;
+  cursor: not-allowed;
+}
+
 .app-shell {
   min-height: 100vh;
 }
@@ -85,6 +92,16 @@ button:hover {
 .nav-link.active {
   background: #dcebf3;
   color: #143d59;
+}
+
+.text-link {
+  color: #1d5f85;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.text-link:hover {
+  text-decoration: underline;
 }
 
 .app-main {
@@ -155,6 +172,27 @@ button:hover {
   grid-column: 1 / -1;
 }
 
+.detail-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.action-bar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .panel,
 .state-panel {
   background: #ffffff;
@@ -181,6 +219,47 @@ button:hover {
 
 .state-panel.empty {
   border-style: dashed;
+}
+
+.notice-panel {
+  background: #fff4da;
+  border: 1px solid #e8c878;
+  border-radius: 8px;
+  color: #73510d;
+  padding: 0.85rem 1rem;
+}
+
+.notice-panel.success {
+  background: #e7f5ec;
+  border-color: #abd5b7;
+  color: #1f6b3a;
+}
+
+.notice-panel.error {
+  background: #fdeceb;
+  border-color: #e8aaa5;
+  color: #a3382d;
+}
+
+.metadata-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.metadata-list div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.metadata-list dt {
+  color: #66788a;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.metadata-list dd {
+  margin: 0;
 }
 
 table {
@@ -295,6 +374,18 @@ th {
   }
 
   .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-header {
+    flex-direction: column;
+  }
+
+  .action-bar {
+    justify-content: flex-start;
+  }
+
+  .detail-grid {
     grid-template-columns: 1fr;
   }
 

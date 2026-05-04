@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import apiClient from '../api/apiClient.js';
 import EmptyState from '../components/EmptyState.jsx';
 import ErrorState from '../components/ErrorState.jsx';
@@ -78,6 +79,7 @@ function PipelinesPage() {
                 <th>Schedule</th>
                 <th>Active</th>
                 <th>Latest Run</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -94,6 +96,11 @@ function PipelinesPage() {
                     </td>
                     <td>
                       {latestRun ? <StatusBadge value={latestRun.status} /> : <span className="muted-text">No runs</span>}
+                    </td>
+                    <td>
+                      <Link className="text-link" to={`/pipelines/${pipeline.id}`}>
+                        View detail
+                      </Link>
                     </td>
                   </tr>
                 );
