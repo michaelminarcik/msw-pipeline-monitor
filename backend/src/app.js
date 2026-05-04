@@ -4,6 +4,8 @@ const healthRoutes = require("./routes/healthRoutes");
 const datasetRoutes = require("./routes/datasetRoutes");
 const pipelineRoutes = require("./routes/pipelineRoutes");
 const runRoutes = require("./routes/runRoutes");
+const alertRuleRoutes = require("./routes/alertRuleRoutes");
+const alertRoutes = require("./routes/alertRoutes");
 const notFoundHandler = require("./middleware/notFoundHandler");
 const errorHandler = require("./middleware/errorHandler");
 
@@ -15,6 +17,8 @@ app.use("/health", healthRoutes);
 app.use("/api/datasets", datasetRoutes);
 app.use("/api/pipelines", pipelineRoutes);
 app.use("/api/runs", runRoutes);
+app.use("/api/alert-rules", alertRuleRoutes);
+app.use("/api/alerts", alertRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

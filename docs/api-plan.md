@@ -44,35 +44,35 @@ Returns one job run by its ID.
 
 Updates a job run status. This will be used to change a running job to `success` or `failed`.
 
-## Alert Rules
+## Alert Rules (implemented)
 
-### `POST /alert-rules`
+### `POST /api/alert-rules` (implemented)
 
 Creates a new alert rule for a pipeline.
 
-### `GET /alert-rules`
+### `GET /api/alert-rules` (implemented)
 
 Returns a list of alert rules.
 
-### `GET /alert-rules/:id`
+### `GET /api/alert-rules/:id` (implemented)
 
 Returns one alert rule by its ID.
 
-### `PATCH /alert-rules/:id` optional
+### `PATCH /api/alert-rules/:id` (implemented)
 
 Updates an alert rule, for example to activate or deactivate it. This endpoint is optional for the first implementation.
 
-### `DELETE /alert-rules/:id` optional
+### `DELETE /api/alert-rules/:id` (implemented)
 
 Deletes an alert rule. This endpoint is optional for the first implementation.
 
-## Alerts
+## Alerts (implemented)
 
-### `GET /alerts`
+### `GET /api/alerts` (implemented)
 
 Returns a list of alert events.
 
-### `GET /alerts/:id`
+### `GET /api/alerts/:id` (implemented)
 
 Returns one alert event by its ID.
 
