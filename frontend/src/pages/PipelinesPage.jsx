@@ -4,11 +4,12 @@ import apiClient from '../api/apiClient.js';
 import EmptyState from '../components/EmptyState.jsx';
 import ErrorState from '../components/ErrorState.jsx';
 import LoadingState from '../components/LoadingState.jsx';
+import { formatStatus } from '../utils/formatters.js';
 
 function StatusBadge({ value }) {
   const status = value || 'unknown';
 
-  return <span className={`status-badge status-${status}`}>{status}</span>;
+  return <span className={`status-badge status-${status}`}>{formatStatus(status)}</span>;
 }
 
 function PipelinesPage() {
@@ -221,8 +222,8 @@ function PipelinesPage() {
                   return (
                     <tr key={pipeline.id}>
                       <td>{pipeline.name}</td>
-                      <td>{pipeline.dataset?.name || 'Unknown'}</td>
-                      <td>{pipeline.schedule || 'Not scheduled'}</td>
+                    <td>{pipeline.dataset?.name || '-'}</td>
+                    <td>{pipeline.schedule || '-'}</td>
                       <td>
                         <StatusBadge value={pipeline.active ? 'active' : 'inactive'} />
                       </td>

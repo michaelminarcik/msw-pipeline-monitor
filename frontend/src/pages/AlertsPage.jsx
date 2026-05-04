@@ -3,22 +3,13 @@ import apiClient from '../api/apiClient.js';
 import EmptyState from '../components/EmptyState.jsx';
 import ErrorState from '../components/ErrorState.jsx';
 import LoadingState from '../components/LoadingState.jsx';
-
-function formatDate(value) {
-  if (!value) {
-    return 'Unknown';
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
-}
+import { Link } from 'react-router-dom';
+import { formatDateTime, formatStatus } from '../utils/formatters.js';
 
 function StatusBadge({ value }) {
   const status = value || 'unknown';
 
-  return <span className={`status-badge status-${status}`}>{status}</span>;
+  return <span className={`status-badge status-${status}`}>{formatStatus(status)}</span>;
 }
 
 function AlertsPage() {
@@ -88,6 +79,7 @@ function AlertsPage() {
                 <th>Severity</th>
                 <th>Status</th>
                 <th>Pipeline</th>
+                <th>Run</th>
                 <th>Created</th>
               </tr>
             </thead>
@@ -101,8 +93,25 @@ function AlertsPage() {
                   <td>
                     <StatusBadge value={alert.status} />
                   </td>
-                  <td>{alert.run?.pipeline?.name || 'Unknown'}</td>
-                  <td>{formatDate(alert.createdAt)}</td>
+                  <td>
+                    {alert.run?.pipeline?.id ? (
+                      <Link className="text-link" to={`/pipelines/${alert.run.pipeline.id}`}>
+                        {alert.run.pipeline.name || 'Pipeline detail'}
+                      </Link>
+                    ) : (
+                      alert.run?.pipeline?.name || '-'
+                    )}
+                  </td>
+                  <td>
+                    {alert.run?.id ? (
+                      <Link className="text-link" to={`/runs/${alert.run.id}`}>
+                        View run
+                      </Link>
+                    ) : (
+                      '-'
+                    )}
+                  </td>
+                  <td>{formatDateTime(alert.createdAt)}</td>
                 </tr>
               ))}
             </tbody>

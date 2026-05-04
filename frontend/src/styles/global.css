@@ -149,6 +149,16 @@ button:disabled {
   padding: 1rem;
 }
 
+.summary-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.summary-link:hover {
+  border-color: #9bb7c8;
+  box-shadow: 0 2px 8px rgba(31, 41, 51, 0.08);
+}
+
 .summary-card p {
   color: #526475;
   font-weight: 600;
@@ -360,7 +370,8 @@ th {
 }
 
 .status-running,
-.status-warning {
+.status-warning,
+.status-info {
   background: #fff4da;
   border-color: #e8c878;
   color: #73510d;

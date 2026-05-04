@@ -4,22 +4,12 @@ import apiClient from '../api/apiClient.js';
 import EmptyState from '../components/EmptyState.jsx';
 import ErrorState from '../components/ErrorState.jsx';
 import LoadingState from '../components/LoadingState.jsx';
-
-function formatDate(value) {
-  if (!value) {
-    return 'Not finished';
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
-}
+import { formatDateTime, formatNumber, formatStatus } from '../utils/formatters.js';
 
 function StatusBadge({ value }) {
   const status = value || 'unknown';
 
-  return <span className={`status-badge status-${status}`}>{status}</span>;
+  return <span className={`status-badge status-${status}`}>{formatStatus(status)}</span>;
 }
 
 function RunsPage() {
@@ -97,14 +87,14 @@ function RunsPage() {
             <tbody>
               {runs.map((run) => (
                 <tr key={run.id}>
-                  <td>{run.pipeline?.name || 'Unknown'}</td>
-                  <td>{run.pipeline?.dataset?.name || 'Unknown'}</td>
+                  <td>{run.pipeline?.name || '-'}</td>
+                  <td>{run.pipeline?.dataset?.name || '-'}</td>
                   <td>
                     <StatusBadge value={run.status} />
                   </td>
-                  <td>{formatDate(run.startedAt)}</td>
-                  <td>{formatDate(run.finishedAt)}</td>
-                  <td>{run.recordsProcessed}</td>
+                  <td>{formatDateTime(run.startedAt)}</td>
+                  <td>{formatDateTime(run.finishedAt)}</td>
+                  <td>{formatNumber(run.recordsProcessed)}</td>
                   <td>
                     <Link className="text-link" to={`/runs/${run.id}`}>
                       View detail

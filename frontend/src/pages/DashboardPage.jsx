@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import apiClient from '../api/apiClient.js';
 import EmptyState from '../components/EmptyState.jsx';
 import ErrorState from '../components/ErrorState.jsx';
 import LoadingState from '../components/LoadingState.jsx';
+import { formatDateTime, formatNumber, formatStatus } from '../utils/formatters.js';
 
 const initialDashboardData = {
   datasets: [],
@@ -11,21 +13,10 @@ const initialDashboardData = {
   alerts: [],
 };
 
-function formatDate(value) {
-  if (!value) {
-    return 'Not finished';
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
-}
-
 function StatusBadge({ value }) {
   const status = value || 'unknown';
 
-  return <span className={`status-badge status-${status}`}>{status}</span>;
+  return <span className={`status-badge status-${status}`}>{formatStatus(status)}</span>;
 }
 
 function DashboardPage() {
@@ -86,12 +77,12 @@ function DashboardPage() {
     const openAlerts = dashboardData.alerts.filter((alert) => alert.status === 'open').length;
 
     return [
-      { label: 'Total datasets', value: dashboardData.datasets.length },
-      { label: 'Total pipelines', value: dashboardData.pipelines.length },
-      { label: 'Active pipelines', value: activePipelines },
-      { label: 'Total runs', value: dashboardData.runs.length },
-      { label: 'Failed runs', value: failedRuns },
-      { label: 'Open alerts', value: openAlerts },
+      { label: 'Total datasets', value: dashboardData.datasets.length, to: '/datasets' },
+      { label: 'Total pipelines', value: dashboardData.pipelines.length, to: '/pipelines' },
+      { label: 'Active pipelines', value: activePipelines, to: '/pipelines' },
+      { label: 'Total runs', value: dashboardData.runs.length, to: '/runs' },
+      { label: 'Failed runs', value: failedRuns, to: '/runs' },
+      { label: 'Open alerts', value: openAlerts, to: '/alerts' },
     ];
   }, [dashboardData]);
 
@@ -132,16 +123,18 @@ function DashboardPage() {
 
       <div className="summary-grid">
         {metrics.map((metric) => (
-          <article className="summary-card" key={metric.label}>
+          <Link className="summary-card summary-link" to={metric.to} key={metric.label}>
             <p>{metric.label}</p>
-            <strong>{metric.value}</strong>
-          </article>
+            <strong>{formatNumber(metric.value)}</strong>
+          </Link>
         ))}
       </div>
 
       <div className="dashboard-grid">
         <article className="panel">
-          <h3>Recent Pipelines</h3>
+          <h3>
+            <Link className="text-link" to="/pipelines">Recent Pipelines</Link>
+          </h3>
           {recentPipelines.length === 0 ? (
             <p>No pipelines available.</p>
           ) : (
@@ -157,8 +150,10 @@ function DashboardPage() {
                 <tbody>
                   {recentPipelines.map((pipeline) => (
                     <tr key={pipeline.id}>
-                      <td>{pipeline.name}</td>
-                      <td>{pipeline.dataset?.name || 'Unknown'}</td>
+                      <td>
+                        <Link className="text-link" to={`/pipelines/${pipeline.id}`}>{pipeline.name}</Link>
+                      </td>
+                      <td>{pipeline.dataset?.name || '-'}</td>
                       <td>
                         <StatusBadge value={pipeline.active ? 'active' : 'inactive'} />
                       </td>
@@ -171,7 +166,9 @@ function DashboardPage() {
         </article>
 
         <article className="panel">
-          <h3>Recent Runs</h3>
+          <h3>
+            <Link className="text-link" to="/runs">Recent Runs</Link>
+          </h3>
           {recentRuns.length === 0 ? (
             <p>No runs available.</p>
           ) : (
@@ -187,11 +184,13 @@ function DashboardPage() {
                 <tbody>
                   {recentRuns.map((run) => (
                     <tr key={run.id}>
-                      <td>{run.pipeline?.name || 'Unknown'}</td>
+                      <td>
+                        <Link className="text-link" to={`/runs/${run.id}`}>{run.pipeline?.name || 'Run detail'}</Link>
+                      </td>
                       <td>
                         <StatusBadge value={run.status} />
                       </td>
-                      <td>{formatDate(run.startedAt)}</td>
+                      <td>{formatDateTime(run.startedAt)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -201,7 +200,9 @@ function DashboardPage() {
         </article>
 
         <article className="panel dashboard-wide-panel">
-          <h3>Open Alerts</h3>
+          <h3>
+            <Link className="text-link" to="/alerts">Open Alerts</Link>
+          </h3>
           {openAlerts.length === 0 ? (
             <p>No open alerts.</p>
           ) : (
@@ -210,7 +211,15 @@ function DashboardPage() {
                 <div className="alert-row" key={alert.id}>
                   <div>
                     <p>{alert.message}</p>
-                    <span>{alert.run?.pipeline?.name || 'Unknown pipeline'}</span>
+                    <span>
+                      {alert.run?.id ? (
+                        <Link className="text-link" to={`/runs/${alert.run.id}`}>
+                          {alert.run?.pipeline?.name || 'Run detail'}
+                        </Link>
+                      ) : (
+                        alert.run?.pipeline?.name || '-'
+                      )}
+                    </span>
                   </div>
                   <StatusBadge value={alert.severity} />
                 </div>

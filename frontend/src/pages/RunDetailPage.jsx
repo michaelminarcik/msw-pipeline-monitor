@@ -4,22 +4,12 @@ import apiClient from '../api/apiClient.js';
 import EmptyState from '../components/EmptyState.jsx';
 import ErrorState from '../components/ErrorState.jsx';
 import LoadingState from '../components/LoadingState.jsx';
-
-function formatDate(value) {
-  if (!value) {
-    return 'Not finished';
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
-}
+import { formatDateTime, formatNumber, formatStatus } from '../utils/formatters.js';
 
 function StatusBadge({ value }) {
   const status = value || 'unknown';
 
-  return <span className={`status-badge status-${status}`}>{status}</span>;
+  return <span className={`status-badge status-${status}`}>{formatStatus(status)}</span>;
 }
 
 function RunDetailPage() {
@@ -158,15 +148,15 @@ function RunDetailPage() {
             </div>
             <div>
               <dt>Started</dt>
-              <dd>{formatDate(run.startedAt)}</dd>
+              <dd>{formatDateTime(run.startedAt)}</dd>
             </div>
             <div>
               <dt>Finished</dt>
-              <dd>{formatDate(run.finishedAt)}</dd>
+              <dd>{formatDateTime(run.finishedAt)}</dd>
             </div>
             <div>
               <dt>Records Processed</dt>
-              <dd>{run.recordsProcessed}</dd>
+              <dd>{formatNumber(run.recordsProcessed)}</dd>
             </div>
             <div>
               <dt>Error Message</dt>
@@ -180,7 +170,15 @@ function RunDetailPage() {
           <dl className="metadata-list">
             <div>
               <dt>Pipeline</dt>
-              <dd>{run.pipeline?.name || 'Unknown'}</dd>
+              <dd>
+                {run.pipeline?.id ? (
+                  <Link className="text-link" to={`/pipelines/${run.pipeline.id}`}>
+                    {run.pipeline.name || 'Pipeline detail'}
+                  </Link>
+                ) : (
+                  run.pipeline?.name || '-'
+                )}
+              </dd>
             </div>
             <div>
               <dt>Pipeline Status</dt>
@@ -190,15 +188,15 @@ function RunDetailPage() {
             </div>
             <div>
               <dt>Schedule</dt>
-              <dd>{run.pipeline?.schedule || 'Not available'}</dd>
+              <dd>{run.pipeline?.schedule || '-'}</dd>
             </div>
             <div>
               <dt>Dataset</dt>
-              <dd>{run.pipeline?.dataset?.name || 'Unknown'}</dd>
+              <dd>{run.pipeline?.dataset?.name || '-'}</dd>
             </div>
             <div>
               <dt>Dataset Owner</dt>
-              <dd>{run.pipeline?.dataset?.owner || 'Unknown'}</dd>
+              <dd>{run.pipeline?.dataset?.owner || '-'}</dd>
             </div>
           </dl>
         </article>
@@ -265,7 +263,7 @@ function RunDetailPage() {
                     <td>
                       <StatusBadge value={alert.status} />
                     </td>
-                    <td>{formatDate(alert.createdAt)}</td>
+                    <td>{formatDateTime(alert.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>

@@ -3,17 +3,7 @@ import apiClient from '../api/apiClient.js';
 import EmptyState from '../components/EmptyState.jsx';
 import ErrorState from '../components/ErrorState.jsx';
 import LoadingState from '../components/LoadingState.jsx';
-
-function formatDate(value) {
-  if (!value) {
-    return 'Unknown';
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
-}
+import { formatDateTime, formatNumber } from '../utils/formatters.js';
 
 function DatasetsPage() {
   const [datasets, setDatasets] = useState([]);
@@ -195,8 +185,8 @@ function DatasetsPage() {
                   <tr key={dataset.id}>
                     <td>{dataset.name}</td>
                     <td>{dataset.owner}</td>
-                    <td>{dataset.schemaVersion}</td>
-                    <td>{formatDate(dataset.createdAt)}</td>
+                  <td>{formatNumber(dataset.schemaVersion)}</td>
+                  <td>{formatDateTime(dataset.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>

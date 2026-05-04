@@ -4,22 +4,12 @@ import apiClient from '../api/apiClient.js';
 import EmptyState from '../components/EmptyState.jsx';
 import ErrorState from '../components/ErrorState.jsx';
 import LoadingState from '../components/LoadingState.jsx';
-
-function formatDate(value) {
-  if (!value) {
-    return 'Not finished';
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
-}
+import { formatDateTime, formatNumber, formatStatus } from '../utils/formatters.js';
 
 function StatusBadge({ value }) {
   const status = value || 'unknown';
 
-  return <span className={`status-badge status-${status}`}>{status}</span>;
+  return <span className={`status-badge status-${status}`}>{formatStatus(status)}</span>;
 }
 
 function PipelineDetailPage() {
@@ -126,15 +116,15 @@ function PipelineDetailPage() {
             </div>
             <div>
               <dt>Schedule</dt>
-              <dd>{pipeline.schedule || 'Not scheduled'}</dd>
+              <dd>{pipeline.schedule || '-'}</dd>
             </div>
             <div>
               <dt>Created</dt>
-              <dd>{formatDate(pipeline.createdAt)}</dd>
+              <dd>{formatDateTime(pipeline.createdAt)}</dd>
             </div>
             <div>
               <dt>Updated</dt>
-              <dd>{formatDate(pipeline.updatedAt)}</dd>
+              <dd>{formatDateTime(pipeline.updatedAt)}</dd>
             </div>
           </dl>
         </article>
@@ -149,11 +139,11 @@ function PipelineDetailPage() {
               </div>
               <div>
                 <dt>Owner</dt>
-                <dd>{pipeline.dataset.owner || 'Unknown'}</dd>
+                <dd>{pipeline.dataset.owner || '-'}</dd>
               </div>
               <div>
                 <dt>Schema Version</dt>
-                <dd>{pipeline.dataset.schemaVersion || 'Unknown'}</dd>
+                <dd>{formatNumber(pipeline.dataset.schemaVersion)}</dd>
               </div>
             </dl>
           ) : (
@@ -176,6 +166,7 @@ function PipelineDetailPage() {
                   <th>Finished</th>
                   <th>Records</th>
                   <th>Error</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -184,10 +175,15 @@ function PipelineDetailPage() {
                     <td>
                       <StatusBadge value={run.status} />
                     </td>
-                    <td>{formatDate(run.startedAt)}</td>
-                    <td>{formatDate(run.finishedAt)}</td>
-                    <td>{run.recordsProcessed ?? 0}</td>
+                    <td>{formatDateTime(run.startedAt)}</td>
+                    <td>{formatDateTime(run.finishedAt)}</td>
+                    <td>{formatNumber(run.recordsProcessed)}</td>
                     <td>{run.errorMessage || <span className="muted-text">None</span>}</td>
+                    <td>
+                      <Link className="text-link" to={`/runs/${run.id}`}>
+                        View run
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>
