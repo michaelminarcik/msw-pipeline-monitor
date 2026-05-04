@@ -1,0 +1,182 @@
+:root {
+  color: #1f2933;
+  background: #f4f7f9;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #f4f7f9;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  border: 1px solid #b7c4cf;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #1f2933;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.6rem 0.9rem;
+}
+
+button:hover {
+  border-color: #33658a;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-header {
+  background: #ffffff;
+  border-bottom: 1px solid #d8e0e7;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
+  padding: 1.25rem clamp(1rem, 4vw, 3rem);
+}
+
+.app-header h1 {
+  font-size: 1.4rem;
+  line-height: 1.2;
+  margin: 0.15rem 0 0;
+}
+
+.app-kicker,
+.eyebrow {
+  color: #66788a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.app-nav {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.nav-link {
+  border-radius: 6px;
+  color: #405365;
+  font-weight: 600;
+  padding: 0.55rem 0.75rem;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  background: #edf3f7;
+}
+
+.nav-link.active {
+  background: #dcebf3;
+  color: #143d59;
+}
+
+.app-main {
+  margin: 0 auto;
+  max-width: 1120px;
+  padding: 2rem clamp(1rem, 4vw, 3rem);
+}
+
+.page-section {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.page-heading {
+  max-width: 760px;
+}
+
+.page-heading h2 {
+  font-size: 2rem;
+  line-height: 1.2;
+  margin: 0.25rem 0 0.65rem;
+}
+
+.page-heading p {
+  color: #526475;
+  margin: 0;
+}
+
+.panel-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.panel,
+.state-panel {
+  background: #ffffff;
+  border: 1px solid #d8e0e7;
+  border-radius: 8px;
+  padding: 1.1rem;
+}
+
+.panel h3 {
+  font-size: 1rem;
+  margin: 0 0 0.35rem;
+}
+
+.panel p,
+.state-panel p {
+  color: #526475;
+  margin: 0;
+}
+
+.state-panel.error {
+  border-color: #d77a61;
+  color: #9f2d20;
+}
+
+.state-panel.empty {
+  border-style: dashed;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 1px solid #d8e0e7;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  background: #edf3f7;
+  color: #405365;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .app-nav {
+    width: 100%;
+  }
+
+  .nav-link {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}

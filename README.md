@@ -43,7 +43,29 @@ msw-pipeline-monitor/
 - `docs/api-plan.md`: planned REST API endpoints.
 - `docs/technology-decisions.md`: chosen technologies and reasons.
 
+## Running the Frontend
+
+The React frontend foundation is available in the `frontend` folder.
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+By default, Vite serves the frontend at:
+
+```text
+http://localhost:5173
+```
+
+The frontend expects the backend API at:
+
+```text
+http://localhost:3000/api
+```
+
 ## Current Project Status
 
-Initial architecture and planning phase.
+Backend API and seed data are implemented. Frontend foundation is ready for page implementation.
 
