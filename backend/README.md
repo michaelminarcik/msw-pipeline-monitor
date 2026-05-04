@@ -4,7 +4,7 @@ This folder contains the backend foundation for the Big Data Pipeline Monitor sc
 
 The backend is a simple Node.js and Express API. It will later contain the business logic for datasets, pipelines, simulated job runs, alert rules, and alert events.
 
-This step includes the backend structure, Prisma domain model, and the first dataset and pipeline API endpoints.
+This step includes the backend structure, Prisma domain model, dataset and pipeline API endpoints, and simulated pipeline run monitoring.
 
 ## Install Dependencies
 
@@ -187,6 +187,85 @@ Get a pipeline by its ID.
 **Curl example:**
 ```bash
 curl http://localhost:3000/api/pipelines/<PIPELINE_ID>
+```
+
+### `POST /api/pipelines/:id/run`
+Start a simulated run for an active pipeline. This creates a `JobRun` with status `running`.
+
+**Curl example:**
+```bash
+curl -X POST http://localhost:3000/api/pipelines/<PIPELINE_ID>/run
+```
+
+Inactive pipelines return `400`, and unknown pipelines return `404`.
+
+
+## Run Endpoints
+
+### `GET /api/runs`
+List all job runs ordered by `startedAt` descending.
+
+Optional query filters:
+
+- `status`: `pending`, `running`, `success`, or `failed`
+- `pipelineId`: pipeline ID
+
+**Curl examples:**
+```bash
+curl http://localhost:3000/api/runs
+curl "http://localhost:3000/api/runs?status=running"
+curl "http://localhost:3000/api/runs?pipelineId=<PIPELINE_ID>"
+```
+
+### `GET /api/runs/:id`
+Get one job run by its ID, including basic pipeline and dataset information.
+
+**Curl example:**
+```bash
+curl http://localhost:3000/api/runs/<RUN_ID>
+```
+
+### `PATCH /api/runs/:id`
+Finish a running job run as either `success` or `failed`.
+
+Only runs with current status `running` can be updated. Finished runs cannot be updated again.
+
+**Success request body example:**
+```json
+{
+  "status": "success",
+  "recordsProcessed": 15000
+}
+```
+
+**Success curl example:**
+```bash
+curl -X PATCH http://localhost:3000/api/runs/<RUN_ID> \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "success",
+    "recordsProcessed": 15000
+  }'
+```
+
+**Failed request body example:**
+```json
+{
+  "status": "failed",
+  "errorMessage": "Transformation failed"
+}
+```
+
+When a run fails, the backend creates an `AlertEvent` with severity `critical`, status `open`, and `ruleId: null`.
+
+**Failed curl example:**
+```bash
+curl -X PATCH http://localhost:3000/api/runs/<RUN_ID> \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "failed",
+    "errorMessage": "Transformation failed"
+  }'
 ```
 
 ---

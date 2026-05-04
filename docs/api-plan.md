@@ -26,21 +26,21 @@ Returns a list of pipelines.
 ### `GET /api/pipelines/:id` (implemented)
 Returns one pipeline by its ID.
 
-### `POST /api/pipelines/:id/run`
+### `POST /api/pipelines/:id/run` (implemented)
 
 Starts a simulated run for an active pipeline. Creates a new `JobRun` with status `running`.
 
-## Runs
+## Runs (implemented)
 
-### `GET /runs`
+### `GET /api/runs` (implemented)
 
 Returns a list of job runs.
 
-### `GET /runs/:id`
+### `GET /api/runs/:id` (implemented)
 
 Returns one job run by its ID.
 
-### `PATCH /runs/:id`
+### `PATCH /api/runs/:id` (implemented)
 
 Updates a job run status. This will be used to change a running job to `success` or `failed`.
 

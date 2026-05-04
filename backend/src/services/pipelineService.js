@@ -54,8 +54,35 @@ async function getPipelineById(id) {
   });
 }
 
+async function runPipeline(id) {
+  const pipeline = await prisma.pipeline.findUnique({ where: { id } });
+  if (!pipeline) {
+    const err = new Error('Pipeline not found');
+    err.status = 404;
+    throw err;
+  }
+
+  if (!pipeline.active) {
+    const err = new Error('Pipeline is inactive and cannot be run');
+    err.status = 400;
+    throw err;
+  }
+
+  return await prisma.jobRun.create({
+    data: {
+      pipelineId: id,
+      status: 'running',
+      startedAt: new Date(),
+      recordsProcessed: 0,
+      finishedAt: null,
+      errorMessage: null,
+    },
+  });
+}
+
 module.exports = {
   createPipeline,
   getAllPipelines,
   getPipelineById,
+  runPipeline,
 };

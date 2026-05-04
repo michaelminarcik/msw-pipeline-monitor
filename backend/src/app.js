@@ -3,6 +3,7 @@ const express = require("express");
 const healthRoutes = require("./routes/healthRoutes");
 const datasetRoutes = require("./routes/datasetRoutes");
 const pipelineRoutes = require("./routes/pipelineRoutes");
+const runRoutes = require("./routes/runRoutes");
 const notFoundHandler = require("./middleware/notFoundHandler");
 const errorHandler = require("./middleware/errorHandler");
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use("/health", healthRoutes);
 app.use("/api/datasets", datasetRoutes);
 app.use("/api/pipelines", pipelineRoutes);
+app.use("/api/runs", runRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

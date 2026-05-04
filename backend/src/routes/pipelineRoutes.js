@@ -37,4 +37,14 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+// POST /api/pipelines/:id/run
+router.post('/:id/run', async (req, res, next) => {
+  try {
+    const run = await pipelineService.runPipeline(req.params.id);
+    res.status(201).json(run);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
