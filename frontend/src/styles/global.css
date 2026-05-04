@@ -119,6 +119,42 @@ button:hover {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
+.summary-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.summary-card {
+  background: #ffffff;
+  border: 1px solid #d8e0e7;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.summary-card p {
+  color: #526475;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+
+.summary-card strong {
+  color: #143d59;
+  display: block;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dashboard-wide-panel {
+  grid-column: 1 / -1;
+}
+
 .panel,
 .state-panel {
   background: #ffffff;
@@ -165,6 +201,84 @@ th {
   font-weight: 700;
 }
 
+.table-wrap {
+  overflow-x: auto;
+}
+
+.status-badge {
+  background: #edf3f7;
+  border: 1px solid #c9d6df;
+  border-radius: 999px;
+  color: #405365;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.35rem 0.55rem;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.status-active,
+.status-success,
+.status-open {
+  background: #e7f5ec;
+  border-color: #abd5b7;
+  color: #1f6b3a;
+}
+
+.status-running,
+.status-warning {
+  background: #fff4da;
+  border-color: #e8c878;
+  color: #73510d;
+}
+
+.status-inactive,
+.status-failed,
+.status-critical {
+  background: #fdeceb;
+  border-color: #e8aaa5;
+  color: #a3382d;
+}
+
+.status-pending,
+.status-resolved {
+  background: #eef2f5;
+  border-color: #cbd5dd;
+  color: #526475;
+}
+
+.alert-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.alert-row {
+  align-items: center;
+  border: 1px solid #d8e0e7;
+  border-radius: 8px;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.85rem;
+}
+
+.alert-row p {
+  color: #1f2933;
+  font-weight: 600;
+  margin: 0 0 0.2rem;
+}
+
+.alert-row span {
+  color: #66788a;
+  font-size: 0.88rem;
+}
+
+.muted-text {
+  color: #66788a;
+}
+
 @media (max-width: 720px) {
   .app-header {
     align-items: flex-start;
@@ -178,5 +292,14 @@ th {
   .nav-link {
     flex: 1 1 auto;
     text-align: center;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .alert-row {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
